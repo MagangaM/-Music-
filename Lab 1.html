@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="headphones.gif">
+  <title>Wubba Lubba dub dub!!</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-2: #1f2937;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #38bdf8;
+      --accent-2: #22c55e;
+      --danger: #ef4444;
+      --border: rgba(255,255,255,0.12);
+      --shadow: 0 20px 60px rgba(0,0,0,0.35);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at top, rgba(56, 189, 248, 0.18), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.14), transparent 35%),
+        var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      padding: 24px;
+    }
+
+    .app {
+      width: min(920px, 100%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(14px);
+    }
+
+    .hero {
+      padding: 28px 28px 18px;
+      background: linear-gradient(135deg, rgba(56,189,248,0.14), rgba(34,197,94,0.08));
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      max-width: 70ch;
+    }
+
+    .content {
+      padding: 24px 28px 28px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .panel {
+      background: rgba(17, 24, 39, 0.72);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .top-row {
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    @media (max-width: 760px) {
+      .top-row { grid-template-columns: 1fr; }
+    }
+
+    .file-box {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .file-box label {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 14px;
+      background: var(--panel-2);
+      color: var(--text);
+      border: 1px dashed var(--border);
+    }
+
+    .now-playing {
+      display: grid;
+      gap: 6px;
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      min-height: 96px;
+    }
+
+    .now-playing small {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .track-name {
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .time-line {
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @media (max-width: 700px) {
+
+
+      .controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    button, select {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    button:hover, select:hover { transform: translateY(-1px); border-color: rgba(56,189,248,0.55); }
+    button:active { transform: translateY(0); }
+    button.primary { background: linear-gradient(135deg, rgba(56,189,248,0.25), rgba(56,189,248,0.12)); }
+    button.good { background: linear-gradient(135deg, rgba(34,197,94,0.25), rgba(34,197,94,0.12)); }
+    button.danger { background: linear-gradient(135deg, rgba(239,68,68,0.23), rgba(239,68,68,0.12)); }
+    button.active {
+      outline: 2px solid rgba(56,189,248,0.7);
+      border-color: rgba(56,189,248,0.7);
+    }
+
+    .range-group {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .range-row {
+      display: grid;
+      grid-template-columns: 110px 1fr 54px;
+      align-items: center;     gap: 12px;
+    }    .range-row span {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .toggles {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      user-select: none;
+    }
+
+    .toggle input { width: 18px; height: 18px; }
+
+    .progress-wrap {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .hint {
+      border-left: 3px solid var(--accent);
+      padding-left: 12px;
+    }
+  </style>
+</head>
+<body>
+  <main class="app" aria-label="Custom audio controller">
+    <section class="hero">
+      <h1>Wubba Lubba dub dub!!</h1>
+      <p class="subtitle">Load an audio file and control playback with custom buttons, volume, looping, speed, seeking, and keyboard shortcuts.</p>
+    </section>
+
+    <section class="content">
+      <div class="panel top-row">
+        <div class="file-box">
+          <label for="audioFile">Choose an audio file</label>
+          <input id="audioFile" type="file" accept="audio/*" />
+          <p class="footer-note hint">Tip: Use any MP3, WAV, OGG, or M4A file stored on your device.</p>
+        </div>
+
+        <div class="now-playing" aria-live="polite">
+          <small>Now playing</small>
+          <div id="trackName" class="track-name">No file loaded yet</div>
+          <div id="timeLine" class="time-line">00:00 / 00:00</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <audio id="audioPlayer" preload="metadata"></audio>
+
+        <div class="controls" aria-label="Playback controls">
+          <button id="playPauseBtn" class="primary" disabled>Play</button>
+          <button id="stopBtn" class="danger" disabled>Stop</button>
+          <button id="muteBtn" class="good" disabled>Mute</button>
+          <button id="backBtn" disabled>⟲ 10s</button>
+          <button id="forwardBtn" disabled>10s ⟳</button>
+          <button id="resetSpeedBtn" disabled>1× Speed</button>
+        </div>
+
+        <div class="range-group">
+          <div class="progress-wrap">
+            <label for="seekBar">Playback progress</label>
+            <input id="seekBar" type="range" min="0" max="100" value="0" step="0.1" disabled />
+            <div class="progress-meta">
+              <span id="currentTime">00:00</span>
+              <span id="durationTime">00:00</span>
+            </div>
+          </div>
+
+          <div class="range-row">
+            <span>Volume</span>
+            <input id="volumeBar" type="range" min="0" max="1" step="0.01" value="0.8" disabled />
+            <span id="volumeValue">80%</span>
+          </div>
+
+          <div class="range-row">
+            <span>Speed</span>
+            <select id="speedSelect" disabled>
+              <option value="0.5">0.5×</option>
+              <option value="0.75">0.75×</option>
+              <option value="1" selected>1×</option>
+              <option value="1.25">1.25×</option>
+              <option value="1.5">1.5×</option>
+              <option value="2">2×</option>
+            </select>
+            <span id="speedValue">1×</span>
+          </div>
+        </div>
+
+        <div class="toggles">
+          <label class="toggle"><input id="loopToggle" type="checkbox" disabled /> Loop</label>
+          <label class="toggle"><input id="autoPlayToggle" type="checkbox" disabled /> Auto-play after load</label>
+        </div>
+      </div>
+
+      <p class="footer-note">
+        Keyboard shortcuts: Space = Play/Pause, M = Mute, ←/→ = jump 5 seconds, ↑/↓ = volume.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const audio = document.getElementById('audioPlayer');
+    const audioFile = document.getElementById('audioFile');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const muteBtn = document.getElementById('muteBtn');
+    const backBtn = document.getElementById('backBtn');
+    const forwardBtn = document.getElementById('forwardBtn');
+    const resetSpeedBtn = document.getElementById('resetSpeedBtn');
+    const seekBar = document.getElementById('seekBar');
+    const volumeBar = document.getElementById('volumeBar');
+    const speedSelect = document.getElementById('speedSelect');
+    const loopToggle = document.getElementById('loopToggle');
+    const autoPlayToggle = document.getElementById('autoPlayToggle');
+    const trackName = document.getElementById('trackName');
+    const timeLine = document.getElementById('timeLine');
+    const currentTimeEl = document.getElementById('currentTime');
+    const durationTimeEl = document.getElementById('durationTime');
+    const volumeValue = document.getElementById('volumeValue');
+    const speedValue = document.getElementById('speedValue');
+
+    let objectUrl = null;
+
+    function formatTime(seconds) {
+      if (!isFinite(seconds)) return '00:00';
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function setControlsEnabled(enabled) {
+      [playPauseBtn, stopBtn, muteBtn, backBtn, forwardBtn, resetSpeedBtn, seekBar, volumeBar, speedSelect, loopToggle, autoPlayToggle]
+        .forEach(el => el.disabled = !enabled);
+    }
+
+    function updatePlayButton() {
+      playPauseBtn.textContent = audio.paused ? 'Play' : 'Pause';
+    }
+
+    function updateMuteButton() {
+      muteBtn.textContent = audio.muted ? 'Unmute' : 'Mute';
+      muteBtn.classList.toggle('active', audio.muted);
+    }
+
+    function updateTimeDisplays() {
+      const duration = audio.duration || 0;
+      const current = audio.currentTime || 0;
+      currentTimeEl.textContent = formatTime(current);
+      durationTimeEl.textContent = formatTime(duration);
+      timeLine.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
+      seekBar.value = duration ? (current / duration) * 100 : 0;
+    }
+
+    function updateVolumeDisplay() {
+      volumeValue.textContent = `${Math.round(audio.volume * 100)}%`;
+    }
+
+    function updateSpeedDisplay() {
+      speedValue.textContent = `${audio.playbackRate}×`;
+      resetSpeedBtn.classList.toggle('active', audio.playbackRate !== 1);
+    }
+
+    audioFile.addEventListener('change', () => {
+      const file = audioFile.files && audioFile.files[0];
+      if (!file) return;
+
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      objectUrl = URL.createObjectURL(file);
+      audio.src = objectUrl;
+      audio.load();
+
+      trackName.textContent = file.name;
+      setControlsEnabled(true);
+      audio.volume = parseFloat(volumeBar.value);
+      audio.loop = loopToggle.checked;
+      audio.playbackRate = parseFloat(speedSelect.value);
+      audio.muted = false;
+      updateMuteButton();
+      updateSpeedDisplay();
+      updateVolumeDisplay();
+      updateTimeDisplays();
+
+      if (autoPlayToggle.checked) {
+        audio.play().catch(() => {
+          updatePlayButton();
+        });
+      }
+    });
+
+    playPauseBtn.addEventListener('click', async () => {
+      if (!audio.src) return;
+      if (audio.paused) {
+        try {
+          await audio.play();
+        } catch (error) {
+          console.error('Playback failed:', error);
+        }
+      } else {
+        audio.pause();
+      }
+      updatePlayButton();
+    });
+
+    stopBtn.addEventListener('click', () => {
+      audio.pause();
+      audio.currentTime = 0;
+      updatePlayButton();
+      updateTimeDisplays();
+    });
+
+    muteBtn.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      updateMuteButton();
+    });
+
+    backBtn.addEventListener('click', () => {
+      audio.currentTime = Math.max(0, audio.currentTime - 10);
+      updateTimeDisplays();
+    });
+
+    forwardBtn.addEventListener('click', () => {
+      audio.currentTime = Math.min(audio.duration || Infinity, audio.currentTime + 10);
+      updateTimeDisplays();
+    });
+
+    resetSpeedBtn.addEventListener('click', () => {
+      audio.playbackRate = 1;
+      speedSelect.value = '1';
+      updateSpeedDisplay();
+    });
+
+    seekBar.addEventListener('input', () => {
+      if (!audio.duration) return;
+      audio.currentTime = (seekBar.value / 100) * audio.duration;
+      updateTimeDisplays();
+    });
+
+    volumeBar.addEventListener('input', () => {
+      audio.volume = parseFloat(volumeBar.value);
+      if (audio.volume === 0) audio.muted = true;
+      else if (audio.muted) audio.muted = false;
+      updateVolumeDisplay();
+      updateMuteButton();
+    });
+
+    speedSelect.addEventListener('change', () => {
+      audio.playbackRate = parseFloat(speedSelect.value);
+      updateSpeedDisplay();
+    });
+
+    loopToggle.addEventListener('change', () => {
+      audio.loop = loopToggle.checked;
+    });
+
+    audio.addEventListener('loadedmetadata', () => {
+      updateTimeDisplays();
+    });
+
+    audio.addEventListener('timeupdate', updateTimeDisplays);
+    audio.addEventListener('play', updatePlayButton);
+    audio.addEventListener('pause', updatePlayButton);
+    audio.addEventListener('volumechange', () => {
+      updateVolumeDisplay();
+      updateMuteButton();
+    });
+    audio.addEventListener('ratechange', updateSpeedDisplay);
+    audio.addEventListener('ended', () => {
+      if (!audio.loop) updatePlayButton();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (document.activeElement && ['INPUT', 'SELECT'].includes(document.activeElement.tagName)) return;
+      if (!audio.src) return;
+
+      switch (event.key.toLowerCase()) {
+        case ' ':
+          event.preventDefault();
+          playPauseBtn.click();
+          break;
+        case 'm':
+          muteBtn.click();
+          break;
+        case 'arrowleft':
+          event.preventDefault();
+          audio.currentTime = Math.max(0, audio.currentTime - 5);
+          updateTimeDisplays();
+          break;
+        case 'arrowright':
+          event.preventDefault();
+          audio.currentTime = Math.min(audio.duration || Infinity, audio.currentTime + 5);
+          updateTimeDisplays();
+          break;
+        case 'arrowup':
+          event.preventDefault();
+          audio.volume = Math.min(1, audio.volume + 0.05);
+          volumeBar.value = audio.volume;
+          updateVolumeDisplay();
+          break;
+        case 'arrowdown':
+          event.preventDefault();
+          audio.volume = Math.max(0, audio.volume - 0.05);
+          volumeBar.value = audio.volume;
+          updateVolumeDisplay();
+          break;
+      }
+    });
+
+    // Initial UI state
+    setControlsEnabled(false);
+    updatePlayButton();
+    updateMuteButton();
+    updateVolumeDisplay();
+    updateSpeedDisplay();
+  </script>
+</body>
+</html>
+
